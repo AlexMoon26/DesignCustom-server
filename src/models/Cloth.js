@@ -11,16 +11,8 @@ const ClothSchema = new mongoose.Schema(
       required: true,
     },
     pictures: {
-      item: [
-        {
-          id: { type: Number, required: true },
-          path: {
-            type: String,
-            required: true,
-            default: "",
-          },
-        },
-      ],
+      type: [String],
+      default: "",
     },
     count: {
       type: Number,
@@ -31,7 +23,7 @@ const ClothSchema = new mongoose.Schema(
       default: "Описания нет",
     },
     sizes: {
-      type: String,
+      type: [String],
       enum: ["S", "M", "L", "XL", "XXL"],
       required: true,
     },
@@ -39,7 +31,11 @@ const ClothSchema = new mongoose.Schema(
       type: String,
       default: "Черный(-ая)",
     },
-    category: { name: { type: String, default: "" } },
+    category: {
+      type: String,
+      enum: ["Футболки", "Дизайнерская одежда"],
+      default: "Футболки",
+    },
   },
   { timestamps: true }
 );
