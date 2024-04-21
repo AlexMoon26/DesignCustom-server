@@ -1,5 +1,46 @@
 import Cloth from "../models/Cloth.js";
 
+export const getAllCloth = async (req, res) => {
+  try {
+    const clothes = await Cloth.find({});
+    res.status(200).json({ clothes });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const editCloth = async (req, res) => {
+  try {
+    const {
+      name,
+      cost,
+      pictures,
+      count,
+      description,
+      sizes,
+      colors,
+      category,
+    } = req.body;
+    const clothId = req.params.id;
+    const cloth = await Cloth.findByIdAndUpdate(clothId, {
+      name: name,
+      cost: cost,
+      pictures: pictures,
+      count: count,
+      description: description,
+      sizes: sizes,
+      colors: colors,
+      category: category,
+    });
+
+    if (cloth) {
+      return res.status(200).json({ message: "Товар изменен" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const createCloth = async (req, res) => {
   try {
     const {
@@ -13,7 +54,6 @@ export const createCloth = async (req, res) => {
       category,
     } = req.body;
 
-    console.log(pictures);
     const cloth = await Cloth.create({
       name,
       pictures,
