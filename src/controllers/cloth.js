@@ -17,6 +17,7 @@ export const editCloth = async (req, res) => {
       pictures,
       count,
       description,
+      outlay,
       sizes,
       colors,
       category,
@@ -25,6 +26,7 @@ export const editCloth = async (req, res) => {
     const cloth = await Cloth.findByIdAndUpdate(clothId, {
       name: name,
       cost: cost,
+      outlay: outlay,
       pictures: pictures,
       count: count,
       description: description,
@@ -46,6 +48,7 @@ export const createCloth = async (req, res) => {
     const {
       name,
       cost,
+      outlay,
       pictures,
       count,
       description,
@@ -57,9 +60,13 @@ export const createCloth = async (req, res) => {
     const cloth = await Cloth.create({
       name,
       pictures,
-      sizes: "M",
+      sizes,
       cost,
+      outlay,
+      count,
+      colors,
       category,
+      description,
     });
 
     if (cloth) {
@@ -67,6 +74,27 @@ export const createCloth = async (req, res) => {
     }
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+};
+
+export const deleteClothes = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (ids.length > 0) {
+      const deleteResult = await Cloth.deleteMany({
+        _id: { $in: ids.map((id) => id) },
+      });
+      console.log(`Удалено ${deleteResult.deletedCount} товара(-ов)`);
+      res
+        .status(200)
+        .json({ message: `Удалено ${deleteResult.deletedCount} товара(-ов)` });
+    } else {
+      res.status(401).json({ message: "Нечего удалять" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 };
 

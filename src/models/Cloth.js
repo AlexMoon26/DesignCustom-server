@@ -18,6 +18,10 @@ const ClothSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    outlay: {
+      type: Number,
+      default: 0,
+    },
     description: {
       type: String,
       default: "Описания нет",
@@ -28,13 +32,13 @@ const ClothSchema = new mongoose.Schema(
       required: true,
     },
     colors: {
-      type: String,
-      default: "Черный(-ая)",
+      type: [String],
+      default: ["black"],
     },
     category: {
       type: String,
-      enum: ["Футболки", "Дизайнерская одежда"],
-      default: "Футболки",
+      enum: ["tshirts", "designer-clothes"],
+      default: "tshirts",
     },
   },
   { timestamps: true }
