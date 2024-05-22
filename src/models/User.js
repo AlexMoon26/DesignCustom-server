@@ -43,9 +43,19 @@ const UserSchema = new mongoose.Schema(
     cart: {
       type: [
         {
+          _id: {
+            type: String,
+            required: true
+          },
           item: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Cloth",
+          },
+          sizes: {
+            type: String,
+          },
+          colors: {
+            type: String,
           },
           quantity: {
             type: Number,
