@@ -111,11 +111,13 @@ export const likeCloth = async (req, res) => {
 
     if (isLiked) {
       user.likedClothes.pull(cloth._id);
+      await user.save();
+      res.status(200).json(`Товар "${cloth.name}" убран из избранного`);
     } else {
       user.likedClothes.push(cloth._id);
+      await user.save();
+      res.status(200).json(`Товар "${cloth.name}" добавлен в избранное`);
     }
-
-    await user.save();
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

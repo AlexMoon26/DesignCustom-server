@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import User from "../models/User.js";
+import Cloth from "../models/Cloth.js";
 
 export const addIntoCart = async (req, res) => {
   try {
@@ -90,5 +91,20 @@ export const updateProfile = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getLikedCloth = async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const likedClothes = await Cloth.find({ _id: { $in: user.likedClothes } });
+
+    res.status(200).json(likedClothes);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };

@@ -12,7 +12,7 @@ const router = express.Router();
 router.get("/getAllCloth", getAllCloth);
 router.post("/create", verifyToken, createCloth);
 router.post("/delete", verifyToken, deleteClothes);
-router.post("/:id/like", verifyToken, likeCloth);
+router.get("/:id/like", verifyToken, likeCloth);
 router.post("/:id", verifyToken, editCloth);
 
 export default router;
