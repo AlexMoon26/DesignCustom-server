@@ -1,4 +1,32 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
+const orderItemSchema = new mongoose.Schema(
+  {
+    cloth: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Cloth",
+      required: true,
+    },
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+    size: {
+      type: String,
+      required: true,
+    },
+    color: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+  },
+  { _id: false, id: false }
+);
 
 const OrderSchema = new mongoose.Schema({
   user: {
@@ -6,24 +34,7 @@ const OrderSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  items: [
-    {
-      cloth: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Cloth",
-        required: true,
-      },
-      quantity: {
-        type: Number,
-        required: true,
-        min: 1,
-      },
-      price: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
+  items: [orderItemSchema],
   totalPrice: {
     type: Number,
     required: true,
@@ -35,6 +46,8 @@ const OrderSchema = new mongoose.Schema({
   },
   shippingAddress: {
     type: String,
+    required: true,
+    default: "Адрес не указан",
   },
   createdAt: {
     type: Date,
@@ -44,16 +57,6 @@ const OrderSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
-
-OrderSchema.pre("save", async function (next) {
-  const order = this;
-  order.totalPrice = 0;
-  for (const item of order.items) {
-    const cloth = await Cloth.findById(item.cloth);
-    order.totalPrice += cloth.cost * item.quantity;
-  }
-  next();
 });
 
 const Order = mongoose.model("Order", OrderSchema);
