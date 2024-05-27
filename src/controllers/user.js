@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/User.js";
 import Cloth from "../models/Cloth.js";
+import Order from "../models/Order.js";
 
 export const addIntoCart = async (req, res) => {
   try {
@@ -94,6 +95,34 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+export const updateAddress = async (req, res) => {
+  try {
+    const { region, city, index, address } = req.body;
+
+    const { user } = req;
+    const foundUser = await User.findById(user._id);
+
+    if (!foundUser) {
+      return res.status(404).json({ message: "Пользователь не найден" });
+    }
+
+    foundUser.address = {
+      region,
+      city,
+      index,
+      address,
+    };
+
+    await foundUser.save();
+
+    res
+      .status(200)
+      .json({ message: "Адрес успешно обновлен", address: foundUser.address });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
 export const getLikedCloth = async (req, res) => {
   try {
     const user = req.user;
@@ -106,5 +135,24 @@ export const getLikedCloth = async (req, res) => {
     res.status(200).json(likedClothes);
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+};
+
+export const getUserOrders = async (req, res) => {
+  try {
+    const { user } = req;
+    const findUser = await User.findById(user._id);
+
+    if (!findUser) {
+      return res.status(404).json({ message: "Пользователь не найден" });
+    }
+
+    const userOrders = await Order.find({ user: user._id }).populate(
+      "items.cloth"
+    );
+
+    res.status(200).json(userOrders);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

@@ -1,23 +1,15 @@
 import User from "../models/User.js";
 import Order from "../models/Order.js";
 
-export const getUserOrders = async (req, res) => {
-  try {
-    const { user } = req;
-    const findUser = await User.findById(user._id);
+export const getOrders = async (req, res) => {
+  const orders = await Order.find({})
+    .populate({
+      path: "user",
+      select: "-password -cart -likedClothes",
+    })
+    .populate("items.cloth");
 
-    if (!findUser) {
-      return res.status(404).json({ message: "Пользователь не найден" });
-    }
-
-    const userOrders = await Order.find({ user: user._id }).populate(
-      "items.cloth"
-    );
-
-    res.status(200).json(userOrders);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  res.status(200).json(orders);
 };
 
 export const createOrder = async (req, res) => {

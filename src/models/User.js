@@ -30,22 +30,18 @@ const UserSchema = new mongoose.Schema(
       required: true,
       min: 5,
     },
-    locality: {
-      type: String,
+    address: {
+      region: { type: String },
+      city: { type: String },
+      index: { type: Number },
+      address: { type: String },
     },
-    city: {
-      type: String,
-    },
-    postcode: {
-      type: String,
-    },
-    address: { type: String },
     cart: {
       type: [
         {
           _id: {
             type: String,
-            required: true
+            required: true,
           },
           item: {
             type: mongoose.Schema.Types.ObjectId,
